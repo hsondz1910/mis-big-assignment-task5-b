@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+.hero {
+    background: linear-gradient(to right, #007bff, #6610f2);
+    padding: 50px 0;
+}
+
+.bike-options {
+    background-color: #f8f9fa;
+    padding: 30px 0;
+}
+
+.promotions {
+    background-color: #e9ecef;
+    padding: 20px 0;
+}
+
+footer {
+    margin-top: 20px;
+    background-color: #343a40;
+}
+
+.hero {
+    text-align: center;
+    padding: 50px;
+    background: linear-gradient(270deg, #00c6ff, #0072ff, #00c6ff);
+    background-size: 400% 400%;
+    animation: gradient-animation 15s ease infinite;
+    color: white;
+}
+
+@keyframes gradient-animation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.promotions {
+    position: relative;
+    color: white;
+    overflow: hidden;
+}
+
+.promotions-background {
+    background-image: url('img/sale.jpg');
+    background-size: cover; 
+    background-position: center; 
+    padding: 50px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.promotions h2,
+.promotions p {
+    position: relative;
+    z-index: 2;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}

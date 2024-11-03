@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Bikes - Drive My Motobike</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <script>
+        window.onload = function() {
+            const loggedIn = localStorage.getItem('loggedIn');
+            const username = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+
+            if (!loggedIn || username !== 'admin' || password !== '123456') {
+                alert('Bạn không có quyền truy cập vào trang này. Vui lòng đăng nhập!');
+                window.location.href = 'login.html';
+            }
+        };
+    </script>
+</head>
+<body>
+    <header class="bg-danger text-white p-3">
+        <h1 class="text-center">Drive My Motobike - Manage Bikes</h1>
+        <nav>
+            <ul class="nav justify-content-center">
+                <li class="nav-item"><a class="nav-link text-white" href="dashboard.html">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="admin.html">Admin Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mt-4">
+        <section class="manage-bikes">
+            <h2>Manage Bikes</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Bike Model</th>
+                        <th>Status</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Honda Wave</td>
+                        <td>Available</td>
+                        <td>Hanoi</td>
+                    </tr>
+                    <tr>
+                        <td>Yamaha Exciter</td>
+                        <td>Rented</td>
+                        <td>Ho Chi Minh City</td>
+                    </tr>
+                    <tr>
+                        <td>Suzuki Hayate</td>
+                        <td>Maintenance</td>
+                        <td>Nha Trang</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-center p-3 text-white">
+        <p>&copy; 2024 Drive My Motobike. All rights reserved.</p>
+    </footer>
+</body>
+</html>

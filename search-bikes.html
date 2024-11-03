@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Bikes - Drive My Motobike</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="bg-danger text-white text-center py-3">
+        <h1>Drive My Motobike</h1>
+        <nav>
+            <ul class="nav justify-content-center">
+                <li class="nav-item"><a class="nav-link text-white" href="home.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="search-bikes.html">Search Bikes</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="bookings.html">Bookings</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mt-4">
+        <section class="search-section mb-4">
+            <h2>Search for Your Perfect Bike</h2>
+            <form id="searchForm">
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" placeholder="Enter your location">
+                </div>
+                <div class="mb-3">
+                    <label for="bike-type" class="form-label">Bike Type</label>
+                    <select class="form-select" id="bike-type">
+                        <option value="">Select a bike type</option>
+                        <option value="scooter">Scooter</option>
+                        <option value="motorbike">Motorbike</option>
+                        <option value="cruiser">Cruiser</option>
+                        <option value="sport">Sport</option>
+                        <option value="touring">Touring</option>
+                        <option value="off-road">Off-Road</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-danger">Search</button>
+            </form>
+        </section>
+
+        <section class="search-results mt-4">
+            <h2>Available Bikes</h2>
+            <div id="bikeResults" class="row"></div>
+        </section>
+    </main>
+
+    <footer class="text-center py-3 bg-dark text-white">
+        <p>&copy; 2024 Drive My Motobike. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const bikes = [
+            {
+                name: "Honda Wave",
+                type: "scooter",
+                location: "Hanoi",
+                price: 20,
+                image: "img/honda-wave.png"
+            },
+            {
+                name: "Yamaha Exciter",
+                type: "motorbike",
+                location: "Da Nang",
+                price: 25,
+                image: "img/yamaha-exciter.jpg"
+            },
+            {
+                name: "Suzuki Hayate",
+                type: "cruiser",
+                location: "Ho Chi Minh",
+                price: 30,
+                image: "img/suzuki-hayate.jpg"
+            },
+            {
+                name: "Ducati Monster",
+                type: "sport",
+                location: "Nha Trang",
+                price: 45,
+                image: "img/ducati-monster.jpg"
+            },
+            {
+                name: "Harley-Davidson Fat Boy",
+                type: "cruiser",
+                location: "Ho Chi Minh",
+                price: 60,
+                image: "img/harley-fat-boy.jpg"
+            },
+            {
+                name: "BMW R 1250 GS",
+                type: "touring",
+                location: "Da Lat",
+                price: 75,
+                image: "img/bmw-r1250gs.jpg"
+            },
+            {
+                name: "Honda CRF250L",
+                type: "off-road",
+                location: "Sa Pa",
+                price: 40,
+                image: "img/honda-crf250l.jpg"
+            },
+            {
+                name: "Yamaha MT-07",
+                type: "motorbike",
+                location: "Da Nang",
+                price: 35,
+                image: "img/yamaha-mt07.jpg"
+            },
+            {
+                name: "Kawasaki Ninja ZX-6R",
+                type: "sport",
+                location: "Phu Quoc",
+                price: 50,
+                image: "img/kawasaki-ninja-zx6r.jpg"
+            },
+            {
+                name: "Suzuki V-Strom 650XT",
+                type: "touring",
+                location: "Ha Long",
+                price: 65,
+                image: "img/suzuki-vstrom-650xt.jpg"
+            }
+        ];
+
+        // Function to display all bikes
+        function displayBikes(bikeList) {
+            const bikeResults = document.getElementById('bikeResults');
+            bikeResults.innerHTML = '';
+            bikeList.forEach(bike => {
+                const bikeCard = document.createElement('div');
+                bikeCard.className = 'col-md-4';
+                bikeCard.innerHTML = `
+                    <div class="card mb-4">
+                        <img src="${bike.image}" class="card-img-top" alt="${bike.name}">
+                        <div class="card-body">
+                            <h3 class="card-title">${bike.name}</h3>
+                            <p class="card-text">$${bike.price}/day</p>
+                            <button class="btn btn-success">Book Now</button>
+                        </div>
+                    </div>
+                `;
+                bikeResults.appendChild(bikeCard);
+            });
+        }
+
+        // Display all bikes on page load
+        displayBikes(bikes);
+
+        // Search form submission handler
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const location = document.getElementById('location').value.toLowerCase();
+            const bikeType = document.getElementById('bike-type').value;
+
+            // Filter bikes based on search criteria
+            const results = bikes.filter(bike => {
+                return (bike.type === bikeType || bikeType === "") &&
+                       (bike.location.toLowerCase().includes(location) || location === "");
+            });
+
+            // Display the filtered bikes
+            displayBikes(results);
+        });
+    </script>
+</body>
+</html>
