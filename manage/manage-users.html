@@ -17,7 +17,90 @@
                 alert('Bạn không có quyền truy cập vào trang này. Vui lòng đăng nhập!');
                 window.location.href = 'login.html';
             }
+            loadUsers();
         };
+
+        function loadUsers() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const userTableBody = document.getElementById('userTableBody');
+            userTableBody.innerHTML = '';
+            users.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${user.username}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.status}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editUser(${index})">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${index})">Delete</button>
+                    </td>
+                `;
+                userTableBody.appendChild(row);
+            });
+        }
+
+        function addUser() {
+            const username = document.getElementById('userUsername').value;
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            const password = document.getElementById('userPassword').value;
+            const status = document.getElementById('userStatus').value;
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            users.push({ username, name, email, password, status });
+            localStorage.setItem('users', JSON.stringify(users));
+
+            document.getElementById('userUsername').value = '';
+            document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
+            document.getElementById('userPassword').value = '';
+            document.getElementById('userStatus').value = 'Active';
+            loadUsers();
+        }
+
+        function deleteUser(index) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            users.splice(index, 1);
+            localStorage.setItem('users', JSON.stringify(users));
+            loadUsers();
+        }
+
+        function editUser(index) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users[index];
+            document.getElementById('userUsername').value = user.username;
+            document.getElementById('userName').value = user.name;
+            document.getElementById('userEmail').value = user.email;
+            document.getElementById('userPassword').value = user.password;
+            document.getElementById('userStatus').value = user.status;
+            document.getElementById('updateIndex').value = index;
+            document.getElementById('addButton').style.display = 'none';
+            document.getElementById('updateButton').style.display = 'block';
+        }
+
+        function updateUser() {
+            const index = document.getElementById('updateIndex').value;
+            const username = document.getElementById('userUsername').value;
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            const password = document.getElementById('userPassword').value;
+            const status = document.getElementById('userStatus').value;
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            users[index] = { username, name, email, password, status };
+            localStorage.setItem('users', JSON.stringify(users));
+
+            document.getElementById('userUsername').value = '';
+            document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
+            document.getElementById('userPassword').value = '';
+            document.getElementById('userStatus').value = 'Active';
+            loadUsers();
+            document.getElementById('addButton').style.display = 'block';
+            document.getElementById('updateButton').style.display = 'none';
+        }
     </script>
 </head>
 <body>
@@ -34,34 +117,48 @@
     <main class="container mt-4">
         <section class="manage-users">
             <h2>Manage Users</h2>
-            <table class="table table-striped">
+            <form id="userForm" onsubmit="event.preventDefault(); addUser();">
+                <div class="mb-3">
+                    <label for="userUsername" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="userUsername" required>
+                </div>
+                <div class="mb-3">
+                    <label for="userName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="userName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="userEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="userEmail" required>
+                </div>
+                <div class="mb-3">
+                    <label for="userPassword" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="userPassword" required>
+                </div>
+                <div class="mb-3">
+                    <label for="userStatus" class="form-label">Status</label>
+                    <select class="form-select" id="userStatus">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+                <input type="hidden" id="updateIndex">
+                <button type="submit" class="btn btn-primary" id="addButton">Add User</button>
+                <button type="button" class="btn btn-success" id="updateButton" style="display: none;" onclick="updateUser()">Update User</button>
+            </form>
+
+            <table class="table table-striped mt-4">
                 <thead>
                     <tr>
-                        <th>User ID</th>
+                        <th>#</th>
+                        <th>Username</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>U001</td>
-                        <td>Nguyen Van A</td>
-                        <td>a.nguyen@example.com</td>
-                        <td>Active</td>
-                    </tr>
-                    <tr>
-                        <td>U002</td>
-                        <td>Tran Thi B</td>
-                        <td>b.tran@example.com</td>
-                        <td>Inactive</td>
-                    </tr>
-                    <tr>
-                        <td>U003</td>
-                        <td>Le Van C</td>
-                        <td>c.le@example.com</td>
-                        <td>Active</td>
-                    </tr>
+                <tbody id="userTableBody">
+                    <!-- User rows will be injected here -->
                 </tbody>
             </table>
         </section>

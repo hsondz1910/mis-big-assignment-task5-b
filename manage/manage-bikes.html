@@ -16,8 +16,83 @@
             if (!loggedIn || username !== 'admin' || password !== '123456') {
                 alert('Bạn không có quyền truy cập vào trang này. Vui lòng đăng nhập!');
                 window.location.href = 'login.html';
+            } else {
+                displayBikes();
             }
         };
+
+        function displayBikes() {
+            const bikeData = JSON.parse(localStorage.getItem('bikeData')) || [];
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            bikeData.forEach((bike, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${bike.name}</td>
+                    <td>${bike.status}</td>
+                    <td>${bike.location}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editBike(${index})">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteBike(${index})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addBike() {
+            const bikeName = document.getElementById('bikeName').value;
+            const bikeLocation = document.getElementById('bikeLocation').value;
+            const bikeStatus = document.getElementById('bikeStatus').value;
+
+            const bikeData = JSON.parse(localStorage.getItem('bikeData')) || [];
+            bikeData.push({ name: bikeName, location: bikeLocation, status: bikeStatus });
+            localStorage.setItem('bikeData', JSON.stringify(bikeData));
+            displayBikes();
+            clearForm();
+        }
+
+        function editBike(index) {
+            const bikeData = JSON.parse(localStorage.getItem('bikeData')) || [];
+            const bike = bikeData[index];
+
+            document.getElementById('bikeName').value = bike.name;
+            document.getElementById('bikeLocation').value = bike.location;
+            document.getElementById('bikeStatus').value = bike.status;
+            document.getElementById('editIndex').value = index;
+            document.getElementById('addBikeButton').style.display = 'none';
+            document.getElementById('updateBikeButton').style.display = 'block';
+        }
+
+        function updateBike() {
+            const index = document.getElementById('editIndex').value;
+            const bikeData = JSON.parse(localStorage.getItem('bikeData')) || [];
+
+            bikeData[index].name = document.getElementById('bikeName').value;
+            bikeData[index].location = document.getElementById('bikeLocation').value;
+            bikeData[index].status = document.getElementById('bikeStatus').value;
+
+            localStorage.setItem('bikeData', JSON.stringify(bikeData));
+            displayBikes();
+            clearForm();
+        }
+
+        function deleteBike(index) {
+            const bikeData = JSON.parse(localStorage.getItem('bikeData')) || [];
+            bikeData.splice(index, 1);
+            localStorage.setItem('bikeData', JSON.stringify(bikeData));
+            displayBikes();
+        }
+
+        function clearForm() {
+            document.getElementById('bikeName').value = '';
+            document.getElementById('bikeLocation').value = '';
+            document.getElementById('bikeStatus').value = '';
+            document.getElementById('editIndex').value = '';
+            document.getElementById('addBikeButton').style.display = 'block';
+            document.getElementById('updateBikeButton').style.display = 'none';
+        }
     </script>
 </head>
 <body>
@@ -34,30 +109,39 @@
     <main class="container mt-4">
         <section class="manage-bikes">
             <h2>Manage Bikes</h2>
-            <table class="table table-striped">
+            <form onsubmit="event.preventDefault(); addBike();">
+                <div class="mb-3">
+                    <label for="bikeName" class="form-label">Bike Model</label>
+                    <input type="text" class="form-control" id="bikeName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="bikeLocation" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="bikeLocation" required>
+                </div>
+                <div class="mb-3">
+                    <label for="bikeStatus" class="form-label">Status</label>
+                    <select class="form-select" id="bikeStatus">
+                        <option value="Available">Available</option>
+                        <option value="Rented">Rented</option>
+                        <option value="Maintenance">Maintenance</option>
+                    </select>
+                </div>
+                <button type="submit" id="addBikeButton" class="btn btn-primary">Add Bike</button>
+                <button type="button" id="updateBikeButton" class="btn btn-success" style="display:none;" onclick="updateBike()">Update Bike</button>
+                <input type="hidden" id="editIndex">
+            </form>
+
+            <table class="table table-striped mt-3">
                 <thead>
                     <tr>
                         <th>Bike Model</th>
                         <th>Status</th>
                         <th>Location</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Honda Wave</td>
-                        <td>Available</td>
-                        <td>Hanoi</td>
-                    </tr>
-                    <tr>
-                        <td>Yamaha Exciter</td>
-                        <td>Rented</td>
-                        <td>Ho Chi Minh City</td>
-                    </tr>
-                    <tr>
-                        <td>Suzuki Hayate</td>
-                        <td>Maintenance</td>
-                        <td>Nha Trang</td>
-                    </tr>
+                    <!-- Bike data will be displayed here -->
                 </tbody>
             </table>
         </section>
