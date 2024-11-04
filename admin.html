@@ -17,6 +17,28 @@
                 alert('Bạn không có quyền truy cập vào trang này. Vui lòng đăng nhập!');
                 window.location.href = 'login.html';
             }
+
+            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            const totalBookings = bookings.length;
+            const activeRentals = bookings.filter(booking => new Date(booking.returnTime) > new Date()).length;
+            const totalRevenue = bookings.reduce((acc, booking) => acc + (booking.price || 0), 0);
+
+            document.getElementById('totalBookings').textContent = totalBookings;
+            document.getElementById('activeRentals').textContent = activeRentals;
+            document.getElementById('totalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
+
+            const bikeStatuses = [
+                { model: 'Honda Wave', status: 'Available', location: 'Hanoi' },
+                { model: 'Yamaha Exciter', status: 'Rented', location: 'Ho Chi Minh City' },
+                { model: 'Suzuki Hayate', status: 'Maintenance', location: 'Nha Trang' }
+            ];
+
+            const bikeTableBody = document.getElementById('bikeTableBody');
+            bikeStatuses.forEach(bike => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${bike.model}</td><td>${bike.status}</td><td>${bike.location}</td>`;
+                bikeTableBody.appendChild(row);
+            });
         };
     </script>
 </head>
@@ -39,7 +61,7 @@
                     <div class="card text-center">
                         <div class="card-body">
                             <h3 class="card-title">Total Bookings</h3>
-                            <p class="card-text">150</p>
+                            <p class="card-text" id="totalBookings">0</p>
                         </div>
                     </div>
                 </div>
@@ -47,7 +69,7 @@
                     <div class="card text-center">
                         <div class="card-body">
                             <h3 class="card-title">Active Rentals</h3>
-                            <p class="card-text">30</p>
+                            <p class="card-text" id="activeRentals">0</p>
                         </div>
                     </div>
                 </div>
@@ -55,7 +77,7 @@
                     <div class="card text-center">
                         <div class="card-body">
                             <h3 class="card-title">Total Revenue</h3>
-                            <p class="card-text">$5000</p>
+                            <p class="card-text" id="totalRevenue">$0.00</p>
                         </div>
                     </div>
                 </div>
@@ -72,22 +94,7 @@
                         <th>Location</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>Honda Wave</td>
-                        <td>Available</td>
-                        <td>Hanoi</td>
-                    </tr>
-                    <tr>
-                        <td>Yamaha Exciter</td>
-                        <td>Rented</td>
-                        <td>Ho Chi Minh City</td>
-                    </tr>
-                    <tr>
-                        <td>Suzuki Hayate</td>
-                        <td>Maintenance</td>
-                        <td>Nha Trang</td>
-                    </tr>
+                <tbody id="bikeTableBody">
                 </tbody>
             </table>
         </section>

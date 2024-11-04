@@ -54,6 +54,43 @@
         <p>&copy; 2024 Drive My Motobike. All rights reserved.</p>
     </footer>
 
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalLabel">Book a Bike</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bookingForm">
+                        <div class="mb-3">
+                            <label for="customerName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="customerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerPhone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="customerPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="customerEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bookingTime" class="form-label">Booking Time</label>
+                            <input type="datetime-local" class="form-control" id="bookingTime" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="returnTime" class="form-label">Return Time</label>
+                            <input type="datetime-local" class="form-control" id="returnTime" name="returnTime" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger">Confirm Booking</button>
+                    </form>                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const bikes = [
@@ -129,7 +166,6 @@
             }
         ];
 
-        // Function to display all bikes
         function displayBikes(bikeList) {
             const bikeResults = document.getElementById('bikeResults');
             bikeResults.innerHTML = '';
@@ -150,23 +186,62 @@
             });
         }
 
-        // Display all bikes on page load
         displayBikes(bikes);
 
-        // Search form submission handler
         document.getElementById('searchForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const location = document.getElementById('location').value.toLowerCase();
             const bikeType = document.getElementById('bike-type').value;
 
-            // Filter bikes based on search criteria
             const results = bikes.filter(bike => {
                 return (bike.type === bikeType || bikeType === "") &&
                        (bike.location.toLowerCase().includes(location) || location === "");
             });
 
-            // Display the filtered bikes
             displayBikes(results);
+        });
+    </script>
+    <script>
+        document.getElementById('bikeResults').addEventListener('click', function(event) {
+            if (event.target.classList.contains('btn-success')) {
+                const bikeCard = event.target.closest('.card');
+                const bikeName = bikeCard.querySelector('.card-title').textContent;
+
+                const bookingModal = new bootstrap.Modal(document.getElementById('bookingModal'));
+                document.getElementById('bookingModalLabel').textContent = `Book ${bikeName}`;
+                bookingModal.show();
+
+                document.getElementById('bookingForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const customerName = document.getElementById('customerName').value;
+                    const customerPhone = document.getElementById('customerPhone').value;
+                    const customerEmail = document.getElementById('customerEmail').value;
+                    const bookingTime = document.getElementById('bookingTime').value;
+                    const returnTime = document.getElementById('returnTime').value;
+
+                    if (!bookingTime || !returnTime) {
+                        alert('Please select both booking and return times.');
+                        return;
+                    }
+
+                    const bookingInfo = {
+                        bikeName,
+                        customerName,
+                        customerPhone,
+                        customerEmail,
+                        bookingTime,
+                        returnTime,
+                        date: new Date().toLocaleDateString()
+                    };
+
+                    let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+                    bookings.push(bookingInfo);
+                    localStorage.setItem('bookings', JSON.stringify(bookings));
+
+                    alert('Booking confirmed!');
+                    bookingModal.hide();
+                });
+            }
         });
     </script>
 </body>
